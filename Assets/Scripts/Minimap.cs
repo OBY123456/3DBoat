@@ -57,32 +57,32 @@ public class Minimap : MonoBehaviour
     {
         float rotate = Vector3.Angle(Boat.forward, (vector-Boat.position).normalized);
         //Debug.Log("旋转角度==" + rotate);
-        //if (rotate > 3.0f)
-        //{
-        //    TurnPower = true;
-        //    if (Destination_Change(vector))
-        //    {
-        //        //向右转
-        //        if (Vector3.Cross(Boat.forward, vector.normalized).y >= 0)
-        //        {
-        //            boatProbes._turnPower = Turnto_speed;
-        //        }
-        //        else //向左转
-        //        {
-        //            boatProbes._turnPower = -Turnto_speed;
-        //        }
-        //        Debug.Log(Vector3.Cross(Boat.forward, vector.normalized).y);
-        //        Debug.Log("rotate==" + rotate);
-        //    }
-        //}
-        //else
-        //{
-        //    if (TurnPower)
-        //    {
-        //        boatProbes._turnPower = 0;
-        //        TurnPower = false;
-        //    }
-        //}
+        if (rotate > 3.0f)
+        {
+            TurnPower = true;
+            if (Destination_Change(vector))
+            {
+                //向右转
+                if (Vector3.Cross(Boat.forward, vector.normalized).y >= 0)
+                {
+                    boatProbes._turnPower = Turnto_speed;
+                }
+                else //向左转
+                {
+                    boatProbes._turnPower = -Turnto_speed;
+                }
+                Debug.Log(Vector3.Cross(Boat.forward, vector.normalized).y);
+                Debug.Log("rotate==" + rotate);
+            }
+        }
+        else
+        {
+            if (TurnPower)
+            {
+                boatProbes._turnPower = 0;
+                TurnPower = false;
+            }
+        }
 
         Debug.Log(Vector3.Cross(Boat.forward, vector.normalized).y);
 
