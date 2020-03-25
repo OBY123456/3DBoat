@@ -1378,6 +1378,94 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1921970520}
   m_CullTransparentMesh: 0
+--- !u!1001 &1996764868
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3769725348944272936, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_Name
+      value: Sailing_Boat
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 434.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 445
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.9890841
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.14735197
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -163.05301
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766505837459403486, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3874185874209896336, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: _enginePower
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3874185874209896336, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: Slider_leftForce
+      value: 
+      objectReference: {fileID: 1516063448}
+    - target: {fileID: 3769725348944272939, guid: daa2e28ba138bab4aaee16501b088f8f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1368610540, guid: daa2e28ba138bab4aaee16501b088f8f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: daa2e28ba138bab4aaee16501b088f8f, type: 3}
 --- !u!1 &2011446401
 GameObject:
   m_ObjectHideFlags: 0
@@ -1681,6 +1769,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Whirlpool
+      objectReference: {fileID: 0}
+    - target: {fileID: 1822144111012428888, guid: cbf6a5958a238114abe6e705934b7fa7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1822144111012428889, guid: cbf6a5958a238114abe6e705934b7fa7,
         type: 3}

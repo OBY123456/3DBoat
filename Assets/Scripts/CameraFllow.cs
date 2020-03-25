@@ -10,6 +10,8 @@ public class CameraFllow : MonoBehaviour
     public BoatProbes boatProbes;
     private Vector3 offset2;
 
+    public float Sensity = 5.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,12 +34,13 @@ public class CameraFllow : MonoBehaviour
     {
         Vector3 vector3 = player.position + player.TransformDirection(offset);
         //Debug.Log(Mathf.Abs(vector3.y - transform.position.y));
-        transform.position = Vector3.Lerp(transform.position, new Vector3(vector3.x, transform.position.y, vector3.z), Time.deltaTime * 5);
-        if (boatProbes._turnPower != 0)
-        {
-            //transform.position = Vector3.Lerp(transform.position, new Vector3(vector3.x, transform.position.y, vector3.z), Time.deltaTime * 5);
-            transform.LookAt(player.position);
-        }
+        transform.position = Vector3.Lerp(transform.position, new Vector3(vector3.x, transform.position.y, vector3.z), Time.deltaTime * Sensity);
+        transform.LookAt(player.position);
+        //if (boatProbes._turnPower != 0)
+        //{
+        //    //transform.position = Vector3.Lerp(transform.position, new Vector3(vector3.x, transform.position.y, vector3.z), Time.deltaTime * 5);
+        //    transform.LookAt(player.position);
+        //}
         //else
         //{
         //    transform.position = Vector3.Lerp(transform.position, new Vector3(vector3.x, transform.position.y, transform.position.z), Time.deltaTime * 5);

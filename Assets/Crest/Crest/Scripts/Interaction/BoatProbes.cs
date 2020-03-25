@@ -5,6 +5,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Crest
 {
@@ -72,6 +73,9 @@ namespace Crest
         Vector3[] _queryResultVels;
 
         SampleFlowHelper _sampleFlowHelper = new SampleFlowHelper();
+
+        public Slider Slider_leftForce;
+        public Vector3 DeviationValue;
 
         private void Start()
         {
@@ -146,6 +150,8 @@ namespace Crest
             FixedUpdateDrag(collProvider, waterSurfaceVel);
             FixedUpdateEngine();
 
+            FixUpdateLeftForce();
+
             collProvider.ReturnSamplingData(_samplingData);
         }
 
@@ -164,7 +170,7 @@ namespace Crest
         void FixedUpdateEngine()
         {
             var forcePosition = _rb.position;
-
+            //Debug.Log("Rigidbody==" + forcePosition);
             var forward = _engineBias;
             if (_playerControlled) forward += Input.GetAxis("Vertical");
             _rb.AddForceAtPosition(transform.forward * _enginePower * forward, forcePosition, ForceMode.Acceleration);
@@ -255,12 +261,12 @@ namespace Crest
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+
+        private void FixUpdateLeftForce()
         {
-            if(other.tag == "target")
-            {
-                _enginePower = 0;
-            }
+            Vector3 vector3 = _rb.position + DeviationValue;
+            _rb.AddForceAtPosition(transform.right * Slider_leftForce.value, vector3, ForceMode.Acceleration);
+            //Debug.Log("Slider_leftForce==" + Slider_leftForce.value);
         }
     }
 
