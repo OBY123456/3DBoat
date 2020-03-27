@@ -26,7 +26,7 @@ namespace Crest
         float _weightUpDownMul = 0.5f;
 
         [Tooltip("Teleport speed (km/h) - if the calculated speed is larger than this amount, the object is deemed to have teleported and the computed velocity is discarded."), SerializeField]
-        float _teleportSpeed = 500f;
+        float _teleportSpeed = 5000f;
         [SerializeField]
         bool _warnOnTeleport = false;
         [Tooltip("Maximum speed clamp (km/h), useful for controlling/limiting wake."), SerializeField]

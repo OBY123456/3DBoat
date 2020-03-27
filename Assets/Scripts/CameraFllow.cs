@@ -28,6 +28,7 @@ public class CameraFllow : MonoBehaviour
         //transform.LookAt(player.position);
         //Vector3 vector3 = new Vector3(19.34f, transform.localEulerAngles.y, 0);
         //transform.localEulerAngles = vector3;
+
     }
 
     private void LateUpdate()
@@ -35,6 +36,7 @@ public class CameraFllow : MonoBehaviour
         Vector3 vector3 = player.position + player.TransformDirection(offset);
         //Debug.Log(Mathf.Abs(vector3.y - transform.position.y));
         transform.position = Vector3.Lerp(transform.position, new Vector3(vector3.x, transform.position.y, vector3.z), Time.deltaTime * Sensity);
+       // transform.position = vector3;
         transform.LookAt(player.position);
         //if (boatProbes._turnPower != 0)
         //{

@@ -150,6 +150,16 @@ namespace DigitalRuby.WeatherMaker
                     }
                 }
 
+                if (DawnDuskSlider.value > 32700 && DawnDuskSlider.value < 60000)
+                {
+                    Minimap.Instance.Set_langhua_Color(Color.white);
+                    
+                }
+                else 
+                {
+                    Minimap.Instance.Set_langhua_Color(new Color(124 / 255f, 121 / 255f, 121 / 255f));
+                }
+
                 if (TimeOfDayText.IsActive() && ShowTimeOfDay)
                 {
                     System.TimeSpan t = System.TimeSpan.FromSeconds(WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay);

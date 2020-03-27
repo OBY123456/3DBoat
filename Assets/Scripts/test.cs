@@ -27,10 +27,24 @@ public class test : MonoBehaviour
     {
         //FixedUpdateEngine();
         //Boat_Turnto(Target.position);
-        //Debug.DrawLine(Boat.transform.position, Target.transform.position, Color.red);
-        T1.DOMove(Target.position, time).SetSpeedBased();
+        Debug.DrawLine(T2.transform.position, Target.transform.position, Color.red);
+        Debug.DrawRay(T2.transform.position, Boat.forward*5.0f, Color.blue);
+        //T1.DOMove(Target.position, time).SetSpeedBased();
         var forcePosition = _rb.position;
-        _rb.AddForceAtPosition(Boat.forward * _enginePower, forcePosition, ForceMode.Acceleration);
+        _rb.AddForceAtPosition(T2.forward * _enginePower, forcePosition, ForceMode.Acceleration);
+        //_rb.AddRelativeForce(T2.forward * _enginePower, ForceMode.Acceleration);
+        LookAtTarget(Target.position);
+    }
+
+    protected void LookAtTarget(Vector3 vector3)
+    {
+        Vector3 dir;
+        if (T2 != null)
+        {
+            dir = vector3 - T2.position;
+            Quaternion rot = Quaternion.LookRotation(dir);
+            T2.DORotate(new Vector3(rot.eulerAngles.x, rot.eulerAngles.y, rot.eulerAngles.z), 3.0f, RotateMode.Fast);
+        }
     }
 
     private void Boat_Turnto(Vector3 vector)

@@ -7,6 +7,8 @@ using DG.Tweening;
 
 public class Minimap : MonoBehaviour
 {
+    public static Minimap Instance;
+
     public RectTransform map;
     public RectTransform map_Boat,map_Target;
 
@@ -31,6 +33,22 @@ public class Minimap : MonoBehaviour
     // Start is called before the first frame update
     private Rigidbody rb;
 
+    public Transform Trail_Back, Trail_Front;
+
+    public Transform[] LangHuaGroup;
+
+    public Vector3 Trail_Scale = new Vector3(0.3f, 0.3f, 0.3f);
+
+    private float Transition_Time = 4.0f;
+
+    public Image RouteImage;
+    public Transform RouteImageGroup;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         Current_Destination = Vector3.zero;
@@ -38,7 +56,7 @@ public class Minimap : MonoBehaviour
         MapButton.onClick.AddListener(() => {
             
         });
-
+        Set_langhua_start();
         rb = Boat.GetComponent<Rigidbody>();
     }
 
@@ -47,8 +65,17 @@ public class Minimap : MonoBehaviour
     {
         Set_MapBoat_Position();
         Set_MapTarget_Position();
-        Boat_Turnto(Target.gameObject.transform.position);
+        
         Debug.DrawLine(Boat.position, Target.transform.position, Color.red);
+        Debug.DrawRay(Boat.position, Boat.forward*100.0f, Color.blue);
+
+    }
+
+    private void FixedUpdate()
+    {
+        Boat_Turnto(Target.gameObject.transform.position);
+
+       // LookAtTarget(Target.gameObject.transform.position);
     }
 
     private void Set_MapBoat_Position()
@@ -71,16 +98,21 @@ public class Minimap : MonoBehaviour
     bool lerp;
     float time = 0;
     float originSpeed;
+    float Distance = 10.0f;
+    Vector2 Current_Map_Boat;
     /// <summary>
     /// Turnto == 转向
     /// </summary>
     /// <param name="vector"></param>
     private void Boat_Turnto(Vector3 vector)
     {
-        float rotate = Vector3.Angle(Boat.forward, (vector-Boat.position).normalized);
+        //float rotate = Vector3.Angle(Boat.forward, (vector - Boat.position).normalized);
         //Debug.Log("旋转角度==" + rotate);
-
-        if (rotate > 3f)
+        Vector3 dir;
+        dir = vector - Boat.position;
+        Quaternion rot = Quaternion.LookRotation(dir);
+        //Debug.Log("rot=== " + rot.eulerAngles.y+" boat eulerAngle.y "+Boat.eulerAngles.y);
+        if (Mathf.Abs( rot.eulerAngles.y - Boat.eulerAngles.y) > 1.0f)
         {
             if (Destination_Change(vector))
             {
@@ -108,60 +140,127 @@ public class Minimap : MonoBehaviour
         {
             if (TurnPower)
             {
-                //time = boatProbes._enginePower;
                 originSpeed = boatProbes._enginePower;
-                Debug.Log(rb.velocity);
-                time = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.y * rb.velocity.y + rb.velocity.z * rb.velocity.z)*0.2f;
 
-                //time = Vector2.Distance(new Vector2(Boat.position.x, Boat.position.z), new Vector2(Target.transform.position.x, Target.transform.position.z)) /Mathf.Abs(Boat.GetComponent<Rigidbody>().velocity.z);
-                Debug.Log(time);
+                time = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.y * rb.velocity.y + rb.velocity.z * rb.velocity.z) * 0.2f;
                 boatProbes._turnPower = 0;
                 boatProbes._enginePower = 0;
                 TurnPower = false;
-                lerp = true;
+                lerp = true;     
             }
-
         }
 
-        if (lerp && time> 0)
+        if (lerp && time > 0)
         {
             Vector3 vector3 = new Vector3(vector.x, Boat.position.y, vector.z);
             time = Mathf.Lerp(time, originSpeed, 0.01f);
-            Debug.Log("time==" + time);
-            Boat.DOMove(Target.transform.position, time).SetSpeedBased().OnComplete(delegate() {
-                lerp = false;
-                Boat.DOKill(); 
-                
-            });
+            Set_langhua_SpeedUp();
+
+            if (Vector2.Distance(Current_Map_Boat, map_Boat.anchoredPosition) > Distance)
+            {
+                Current_Map_Boat = map_Boat.anchoredPosition;
+                Creat_RouteImage(map_Boat.anchoredPosition);
+            }
+
+            Boat.DOMove(Target.transform.position, time).SetSpeedBased();
 
             float dis = Vector3.Distance(Target.transform.position, Boat.transform.position);
-            
-            if (dis<1000)
+
+            if (dis < 1000)
             {
                 Boat.DOKill();
-                Boat.DOMove(Target.transform.position, 1000/(2.0f*time)).SetAutoKill(true) ;
+                Boat.DOMove(Target.transform.position, 1000 / (2.0f * time)).SetAutoKill(true);
+                Set_langhua_SpeedDown();
             }
         }
-
-
-        //Debug.Log(Vector3.Cross(Boat.forward, vector.normalized).y);
-
     }
-
 
     private bool Destination_Change(Vector3 vector)
     {
-        if(vector!= Current_Destination)
+        if (Vector3.Angle(Current_Destination, (vector - Current_Destination).normalized) < 1.5f && Current_Destination != Vector3.zero)
+        {
+            return false;
+        }
+
+        if (vector!= Current_Destination)
         {
             Current_Destination = vector;
             boatProbes._enginePower = speed;
             lerp = false;
             Boat.DOKill();
+            Set_langhua_SpeedDown();
+            Current_Map_Boat = map_Boat.anchoredPosition;
+
+            Creat_RouteImage(map_Boat.anchoredPosition);
             return true;
         }
         else
         {
             return false;
         }
+    }
+
+    private void Set_langhua_start()
+    {
+
+        Trail_Back.localScale = Trail_Scale;
+        Trail_Front.localScale = Trail_Scale;
+
+        foreach (Transform item in LangHuaGroup)
+        {
+            item.localScale = Trail_Scale;
+        }
+    }
+
+    private void Set_langhua_SpeedUp()
+    {
+        Trail_Back.DOKill();
+        Trail_Front.DOKill();
+        foreach (Transform item in LangHuaGroup)
+        {
+            item.DOKill();
+        }
+
+        Trail_Back.DOScale(new Vector3(1, 1, 1), Transition_Time);
+        Trail_Front.DOScale(new Vector3(1, 1, 1), Transition_Time);
+
+        foreach (Transform item in LangHuaGroup)
+        {
+            item.DOScale(new Vector3(1, 1, 1), Transition_Time);
+        }
+    }
+
+    private void Set_langhua_SpeedDown()
+    {
+        Trail_Back.DOKill();
+        Trail_Front.DOKill();
+        foreach (Transform item in LangHuaGroup)
+        {
+            item.DOKill();
+        }
+
+        Trail_Back.DOScale(Trail_Scale, Transition_Time);
+        Trail_Front.DOScale(Trail_Scale, Transition_Time);
+
+        foreach (Transform item in LangHuaGroup)
+        {
+            item.DOScale(Trail_Scale, Transition_Time); 
+        }
+    }
+
+    public void Set_langhua_Color(Color color)
+    {
+        foreach (Transform item in LangHuaGroup)
+        {
+            item.gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", color);
+        }
+    }
+
+    private void Creat_RouteImage(Vector2 vector2)
+    {
+        Image img = Instantiate(RouteImage);
+       
+        img.transform.SetParent(RouteImageGroup);
+        img.GetComponent<RectTransform>().anchoredPosition = vector2;
     }
 }

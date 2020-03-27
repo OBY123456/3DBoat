@@ -261,6 +261,13 @@ namespace Crest
             }
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            if(other.tag.Contains("target"))
+            {
+                _enginePower = 0;
+            }
+        }
 
         private void FixUpdateLeftForce()
         {
