@@ -4,6 +4,8 @@ using UnityEngine;
 using Crest;
 using UnityEngine.UI;
 using DG.Tweening;
+using XCharts;
+using System;
 
 public class Minimap : MonoBehaviour
 {
@@ -44,6 +46,8 @@ public class Minimap : MonoBehaviour
     public Image RouteImage;
     public Transform RouteImageGroup;
 
+    public GaugeChart gaugeChart;
+
     private void Awake()
     {
         Instance = this;
@@ -58,6 +62,13 @@ public class Minimap : MonoBehaviour
         });
         Set_langhua_start();
         rb = Boat.GetComponent<Rigidbody>();
+        BoatProbes.ArriveDelegate += ArriveCallback;
+    }
+
+    private void ArriveCallback()
+    {
+        Set_langhua_SpeedDown();
+        Debug.Log("减速中。。。。");
     }
 
     // Update is called once per frame
@@ -68,7 +79,6 @@ public class Minimap : MonoBehaviour
         
         Debug.DrawLine(Boat.position, Target.transform.position, Color.red);
         Debug.DrawRay(Boat.position, Boat.forward*100.0f, Color.blue);
-
     }
 
     private void FixedUpdate()
@@ -95,7 +105,7 @@ public class Minimap : MonoBehaviour
         Target.transform.position = new Vector3(map_Target.anchoredPosition.x/map.rect.width*Weight,Target.transform.position.y, map_Target.anchoredPosition.y/map.rect.height*Height);
     }
 
-    bool lerp;
+    bool lerp,IsRotate;
     float time = 0;
     float originSpeed;
     float Distance = 10.0f;
@@ -106,15 +116,14 @@ public class Minimap : MonoBehaviour
     /// <param name="vector"></param>
     private void Boat_Turnto(Vector3 vector)
     {
-        //float rotate = Vector3.Angle(Boat.forward, (vector - Boat.position).normalized);
-        //Debug.Log("旋转角度==" + rotate);
         Vector3 dir;
         dir = vector - Boat.position;
         Quaternion rot = Quaternion.LookRotation(dir);
+        //Debug.Log("角度==" + Mathf.Abs(rot.eulerAngles.y - Boat.eulerAngles.y));
         //Debug.Log("rot=== " + rot.eulerAngles.y+" boat eulerAngle.y "+Boat.eulerAngles.y);
-        if (Mathf.Abs( rot.eulerAngles.y - Boat.eulerAngles.y) > 1.0f)
+        if (Mathf.Abs( rot.eulerAngles.y - Boat.eulerAngles.y) > 5.0f)
         {
-            if (Destination_Change(vector))
+            if (Destination_Change(vector) || IsRotate)
             {
                 TurnPower = true;
 
@@ -131,29 +140,21 @@ public class Minimap : MonoBehaviour
                 {
                     Debug.Log("Boat.forward, vector.normalized).y == 0");
                 }
-                //Debug.Log(Vector3.Cross(Boat.forward, vector.normalized).y);
-                //Debug.Log("单位向量==" + Vector3.Cross(Boat.forward, vector.normalized));
-                //Debug.Log("rotate==" + rotate);
             }
         }
         else
         {
             if (TurnPower)
             {
-                originSpeed = boatProbes._enginePower;
-
-                time = Mathf.Sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.y * rb.velocity.y + rb.velocity.z * rb.velocity.z) * 0.2f;
                 boatProbes._turnPower = 0;
-                boatProbes._enginePower = 0;
                 TurnPower = false;
-                lerp = true;     
+                lerp = true;
+                IsRotate = false;
             }
         }
 
-        if (lerp && time > 0)
+        if (lerp)
         {
-            Vector3 vector3 = new Vector3(vector.x, Boat.position.y, vector.z);
-            time = Mathf.Lerp(time, originSpeed, 0.01f);
             Set_langhua_SpeedUp();
 
             if (Vector2.Distance(Current_Map_Boat, map_Boat.anchoredPosition) > Distance)
@@ -162,15 +163,11 @@ public class Minimap : MonoBehaviour
                 Creat_RouteImage(map_Boat.anchoredPosition);
             }
 
-            Boat.DOMove(Target.transform.position, time).SetSpeedBased();
-
             float dis = Vector3.Distance(Target.transform.position, Boat.transform.position);
 
-            if (dis < 1000)
+            if (dis < 2000 && IsRotate == false)
             {
-                Boat.DOKill();
-                Boat.DOMove(Target.transform.position, 1000 / (2.0f * time)).SetAutoKill(true);
-                Set_langhua_SpeedDown();
+                IsRotate = true;
             }
         }
     }
@@ -187,10 +184,9 @@ public class Minimap : MonoBehaviour
             Current_Destination = vector;
             boatProbes._enginePower = speed;
             lerp = false;
-            Boat.DOKill();
             Set_langhua_SpeedDown();
             Current_Map_Boat = map_Boat.anchoredPosition;
-
+            IsRotate = false;
             Creat_RouteImage(map_Boat.anchoredPosition);
             return true;
         }
@@ -230,7 +226,7 @@ public class Minimap : MonoBehaviour
         }
     }
 
-    private void Set_langhua_SpeedDown()
+    public void Set_langhua_SpeedDown()
     {
         Trail_Back.DOKill();
         Trail_Front.DOKill();
@@ -241,7 +237,7 @@ public class Minimap : MonoBehaviour
 
         Trail_Back.DOScale(Trail_Scale, Transition_Time);
         Trail_Front.DOScale(Trail_Scale, Transition_Time);
-
+        Debug.Log("111");
         foreach (Transform item in LangHuaGroup)
         {
             item.DOScale(Trail_Scale, Transition_Time); 

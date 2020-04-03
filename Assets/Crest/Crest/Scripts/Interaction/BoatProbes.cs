@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
+public delegate void ArriveHandler();
+
 namespace Crest
 {
     /// <summary>
@@ -76,6 +78,8 @@ namespace Crest
 
         public Slider Slider_leftForce;
         public Vector3 DeviationValue;
+
+        public static event ArriveHandler ArriveDelegate;
 
         private void Start()
         {
@@ -266,6 +270,8 @@ namespace Crest
             if(other.tag.Contains("target"))
             {
                 _enginePower = 0;
+                _turnPower = 0;
+                ArriveDelegate();
             }
         }
 
